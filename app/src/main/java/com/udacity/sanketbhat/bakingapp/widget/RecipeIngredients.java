@@ -1,12 +1,15 @@
-package com.udacity.sanketbhat.bakingapp.ui;
+package com.udacity.sanketbhat.bakingapp.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.preference.PreferenceManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.udacity.sanketbhat.bakingapp.R;
+import com.udacity.sanketbhat.bakingapp.Utils;
 
 /**
  * Implementation of App Widget functionality.
@@ -16,13 +19,22 @@ public class RecipeIngredients extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
-        CharSequence widgetText = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext())
-                .getString(String.valueOf(appWidgetId), "");//RecipeIngredientsConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_ingredients);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget_grid);
 
+        views.setTextViewText(R.id.ingredients_widget_recipe_name, Utils.getRecipeName(context, appWidgetId));
+
+        Intent intent = new Intent(context, IngredientListWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+        //If I don't set different intent data, previous RemoteViewsFactory is used
+        //Strange!!
+        intent.setData(Uri.parse("content://" + appWidgetId));
+        views.setRemoteAdapter(R.id.ingredients_widget_grid_view, intent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(Intent.ACTION_VIEW), 0);
+        views.setPendingIntentTemplate(R.id.ingredients_widget_grid_view, pendingIntent);
+
+        views.setEmptyView(R.id.ingredients_widget_grid_view, R.id.ingredients_widget_empty_text);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -39,18 +51,20 @@ public class RecipeIngredients extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-            //RecipeIngredientsConfigureActivity.deleteTitlePref(context, appWidgetId);
+            Utils.deleteNameAndList(context, appWidgetId);
         }
     }
 
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
+        // Don't need this function
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+        // Don't need this function
     }
 
 }

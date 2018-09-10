@@ -35,7 +35,7 @@
                 android:value="com.udacity.sanketbhat.bakingapp.ui.StepListActivity" />
         </activity>
 
-        <receiver android:name=".ui.RecipeIngredients">
+        <receiver android:name=".widget.RecipeIngredients">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -45,11 +45,14 @@
                 android:resource="@xml/recipe_ingredients_info" />
         </receiver>
 
-        <activity android:name=".ui.RecipeIngredientsConfigureActivity">
+        <activity android:name=".widget.RecipeIngredientsConfigureActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".widget.IngredientListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

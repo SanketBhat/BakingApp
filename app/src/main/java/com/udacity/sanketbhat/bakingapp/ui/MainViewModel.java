@@ -22,11 +22,13 @@ public class MainViewModel extends AndroidViewModel {
     private static final String TAG = "MainViewModel";
     private RecipeService recipeService;
     private MutableLiveData<List<Recipe>> recipeLiveData;
+    private MutableLiveData<Void> errorIndicator;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
         recipeService = Dependencies.getRecipeService();
         recipeLiveData = new MutableLiveData<>();
+        errorIndicator = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<Recipe>> getRecipes() {
@@ -36,11 +38,14 @@ public class MainViewModel extends AndroidViewModel {
                 public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                     if (response.isSuccessful()) {
                         recipeLiveData.setValue(response.body());
+                    } else {
+                        errorIndicator.setValue(null);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                    errorIndicator.setValue(null);
                     Toast.makeText(getApplication().getApplicationContext(),
                             "Failed to get recipe list!",
                             Toast.LENGTH_LONG)
@@ -52,4 +57,8 @@ public class MainViewModel extends AndroidViewModel {
         return recipeLiveData;
     }
 
+
+    public MutableLiveData<Void> getErrorIndicator() {
+        return errorIndicator;
+    }
 }

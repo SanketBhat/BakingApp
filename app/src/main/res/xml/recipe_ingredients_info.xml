@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.udacity.sanketbhat.bakingapp.ui.RecipeIngredientsConfigureActivity"
-    android:initialKeyguardLayout="@layout/recipe_ingredients"
-    android:initialLayout="@layout/recipe_ingredients"
-    android:minHeight="180dp"
+    android:configure="com.udacity.sanketbhat.bakingapp.widget.RecipeIngredientsConfigureActivity"
+    android:initialKeyguardLayout="@layout/ingredients_widget_grid"
+    android:initialLayout="@layout/ingredients_widget_grid"
+    android:minHeight="110dp"
     android:minWidth="110dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/ingredients_appwidget_preview"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="1800"
-    android:widgetCategory="home_screen"></appwidget-provider>
+    android:updatePeriodMillis="10800000"
+    android:widgetCategory="home_screen" /><!--We don't need to update widget because it is static. Anyhow we are updating it every 3 hours-->

@@ -1,14 +1,11 @@
 package com.udacity.sanketbhat.bakingapp.model;
 
-import android.arch.persistence.room.Entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "recipe_ingredients")
 public class Ingredient implements Parcelable {
-
     public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
         @Override
         public Ingredient createFromParcel(Parcel in) {
@@ -20,6 +17,7 @@ public class Ingredient implements Parcelable {
             return new Ingredient[size];
         }
     };
+
     @SerializedName("quantity")
     private double quantity;
     @SerializedName("measure")
@@ -32,6 +30,7 @@ public class Ingredient implements Parcelable {
         measure = in.readString();
         ingredient = in.readString();
     }
+
 
     public double getQuantity() {
         return quantity;

@@ -1,25 +1,20 @@
-package com.udacity.sanketbhat.bakingapp.ui;
+package com.udacity.sanketbhat.bakingapp.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.udacity.sanketbhat.bakingapp.model.Ingredient;
-
-import java.util.ArrayList;
+import com.udacity.sanketbhat.bakingapp.Utils;
+import com.udacity.sanketbhat.bakingapp.ui.MainActivity;
 
 /**
  * The configuration screen for the {@link RecipeIngredients RecipeIngredients} AppWidget.
  */
 public class RecipeIngredientsConfigureActivity extends Activity {
 
-    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private int mAppWidgetId;
 
 
     @Override
@@ -33,6 +28,7 @@ public class RecipeIngredientsConfigureActivity extends Activity {
         // Find the widget id from the intent.
         Intent intent1 = getIntent();
         Bundle extras = intent1.getExtras();
+        mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
         if (extras != null) {
             mAppWidgetId = extras.getInt(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -52,24 +48,24 @@ public class RecipeIngredientsConfigureActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            ArrayList<Ingredient> ingredients = data.getParcelableArrayListExtra(MainActivity.SELECTED_RECIPE_INGREDIENTS);
-            Gson gson = new Gson();
-            String resultString = gson.toJson(ingredients);
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            pref.edit()
-                    .putString(String.valueOf(mAppWidgetId), resultString)
-                    .commit();
 
-            new Handler().postDelayed(() -> {
-                Intent resultValue = new Intent();
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-                setResult(RESULT_OK, resultValue);
-                finish();
-            }, 3000);
+            String ingredients = data.getStringExtra(MainActivity.SELECTED_RECIPE_INGREDIENTS);
+            String recipeName = data.getStringExtra(MainActivity.SELECTED_RECIPE_NAME);
+            Utils.saveIngredientsList(getApplicationContext(), ingredients, mAppWidgetId);
+            Utils.saveRecipeName(getApplicationContext(), recipeName, mAppWidgetId);
+
+            Intent resultValue = new Intent();
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+            setResult(RESULT_OK, resultValue);
+
+            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{mAppWidgetId});
+            sendBroadcast(intent);
+
             Toast.makeText(this, "Adding home screen widget", Toast.LENGTH_SHORT).show();
-        } else {
-            finish();
         }
+
+        finish();
     }
 }
 
