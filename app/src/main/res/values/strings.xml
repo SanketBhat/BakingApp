@@ -11,5 +11,6 @@
     <string name="recipe_list_item_steps_template">%d steps</string>
     <string name="recipe_list_item_ingredients_template">%d ingredients</string>
     <string name="recipe_list_item_servings_template">%d servings</string>
+    <string name="title_activity_step_ingredients">StepIngredientsActivity</string>
 
 </resources>

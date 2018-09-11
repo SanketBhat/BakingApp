@@ -14,12 +14,20 @@ import java.util.List;
 
 public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepViewHolder> {
 
+    public static final int VIEW_TYPE_STEP = 0;
+    public static final int VIEW_TYPE_INGREDIENTS = 1;
+
     private StepClickListener mStepClickListener;
     private List<Step> stepList;
 
     public StepListAdapter(List<Step> stepList, StepClickListener listener) {
         this.stepList = stepList;
         mStepClickListener = listener;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == 0 ? VIEW_TYPE_INGREDIENTS : VIEW_TYPE_STEP);
     }
 
     public List<Step> getStepList() {
@@ -33,21 +41,30 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
     @NonNull
     @Override
     public StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.step_list_item, parent, false);
+        View v = null;
+        if (viewType == VIEW_TYPE_STEP) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.step_list_item, parent, false);
+        } else {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.step_list_item_ingredients, parent, false);
+        }
         return new StepViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
-        holder.title.setText("Step " + stepList.get(position).getId());
-        holder.subTitle.setText(stepList.get(position).getShortDescription());
+        if (getItemViewType(position) == VIEW_TYPE_STEP) {
+            holder.title.setText("Step " + stepList.get(position - 1).getId());
+            holder.subTitle.setText(stepList.get(position - 1).getShortDescription());
+        }
     }
 
     @Override
     public int getItemCount() {
-        if (stepList != null) return stepList.size();
-        return 0;
+        if (stepList != null) return stepList.size() + 1;
+        //Ingredients item shown anyway
+        return 1;
     }
 
     public interface StepClickListener {

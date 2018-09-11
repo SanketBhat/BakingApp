@@ -3,8 +3,6 @@ package com.udacity.sanketbhat.bakingapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +15,7 @@ import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
 import com.udacity.sanketbhat.bakingapp.model.Step;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +29,7 @@ import java.util.List;
 public class StepListActivity extends AppCompatActivity implements StepListAdapter.StepClickListener {
     List<Step> steps;
     StepListAdapter adapter;
+    List<Ingredient> ingredients;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -44,22 +44,15 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            // TODO: 31-08-2018 Select this for the home screen widget
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        });
-
         Bundle bundle = getIntent().getExtras();
-
-        // TODO: 31-08-2018 Handle NullPointerException
-        if (bundle != null) {
+        if (bundle != null && bundle.containsKey(MainActivity.RECIPE_ITEM)) {
             Recipe recipe = bundle.getParcelable(MainActivity.RECIPE_ITEM);
-            toolbar.setTitle(recipe.getName());
+            if (recipe != null) {
+                toolbar.setTitle(recipe.getName());
 
-            steps = recipe.getSteps();
-            List<Ingredient> ingredients = recipe.getIngredients();
+                steps = recipe.getSteps();
+                ingredients = recipe.getIngredients();
+            }
         }
 
         if (findViewById(R.id.step_detail_container) != null) {
@@ -85,20 +78,38 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
 
     @Override
     public void onStepClick(View v, int position) {
-        Step step = adapter.getStepList().get(position);
+
         if (mTwoPane) {
             Bundle arguments = new Bundle();
-            arguments.putParcelable(StepDetailFragment.STEP_ITEM, step);
-            StepDetailFragment fragment = new StepDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.step_detail_container, fragment)
-                    .commit();
-        } else {
-            Intent intent = new Intent(this, StepDetailActivity.class);
-            intent.putExtra(StepDetailFragment.STEP_ITEM, step);
+            if (position == 0) {
+                arguments.putParcelableArrayList(StepIngredientsFragment.EXTRA_INGREDIENT_LIST, new ArrayList<>(ingredients));
+                StepIngredientsFragment fragment = new StepIngredientsFragment();
+                fragment.setArguments(arguments);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.step_detail_container, fragment)
+                        .commit();
+            } else {
+                Step step = adapter.getStepList().get(position - 1);
 
-            startActivity(intent);
+                arguments.putParcelable(StepDetailFragment.STEP_ITEM, step);
+                StepDetailFragment fragment = new StepDetailFragment();
+                fragment.setArguments(arguments);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.step_detail_container, fragment)
+                        .commit();
+            }
+        } else {
+            if (position == 0) {
+                Intent intent = new Intent(this, StepIngredientsActivity.class);
+                intent.putExtra(StepIngredientsFragment.EXTRA_INGREDIENT_LIST, new ArrayList<>(ingredients));
+                startActivity(intent);
+            } else {
+                Step step = adapter.getStepList().get(position - 1);
+                Intent intent = new Intent(this, StepDetailActivity.class);
+                intent.putExtra(StepDetailFragment.STEP_ITEM, step);
+
+                startActivity(intent);
+            }
         }
     }
 }
