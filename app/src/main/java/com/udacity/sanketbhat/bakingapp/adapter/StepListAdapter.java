@@ -1,12 +1,15 @@
 package com.udacity.sanketbhat.bakingapp.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.model.Step;
 
@@ -14,15 +17,17 @@ import java.util.List;
 
 public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepViewHolder> {
 
-    public static final int VIEW_TYPE_STEP = 0;
-    public static final int VIEW_TYPE_INGREDIENTS = 1;
+    private static final int VIEW_TYPE_STEP = 0;
+    private static final int VIEW_TYPE_INGREDIENTS = 1;
 
     private StepClickListener mStepClickListener;
     private List<Step> stepList;
+    private Context mContext;
 
-    public StepListAdapter(List<Step> stepList, StepClickListener listener) {
+    public StepListAdapter(Context context, List<Step> stepList, StepClickListener listener) {
         this.stepList = stepList;
         mStepClickListener = listener;
+        this.mContext = context;
     }
 
     @Override
@@ -34,14 +39,10 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
         return stepList;
     }
 
-    public void setStepList(List<Step> stepList) {
-        this.stepList = stepList;
-    }
-
     @NonNull
     @Override
     public StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = null;
+        View v;
         if (viewType == VIEW_TYPE_STEP) {
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.step_list_item, parent, false);
@@ -55,8 +56,16 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
     @Override
     public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TYPE_STEP) {
-            holder.title.setText("Step " + stepList.get(position - 1).getId());
+            String title = "Step " + (stepList.get(position - 1).getId() + 1);
+            holder.title.setText(title);
             holder.subTitle.setText(stepList.get(position - 1).getShortDescription());
+
+            String imageUrl = stepList.get(position - 1).getThumbnailURL();
+            if (imageUrl != null && !imageUrl.equals("")) {
+                Picasso.with(mContext)
+                        .load(imageUrl)
+                        .into(holder.image);
+            }
         }
     }
 
@@ -74,12 +83,14 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
     class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView title, subTitle;
+        ImageView image;
 
-        public StepViewHolder(View itemView) {
+        StepViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             title = itemView.findViewById(R.id.stepTitle);
             subTitle = itemView.findViewById(R.id.stepSubtitle);
+            image = itemView.findViewById(R.id.stepImage);
         }
 
         @Override

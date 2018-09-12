@@ -70,7 +70,7 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, @NonNull List<Step> stepList) {
-        adapter = new StepListAdapter(stepList, this);
+        adapter = new StepListAdapter(this, stepList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);

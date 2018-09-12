@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/recipe_default" />
+            app:srcCompat="@drawable/recipe_bg_default" />
 
         <View
             android:id="@+id/viewBackgroundBottom"
