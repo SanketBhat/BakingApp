@@ -1,9 +1,11 @@
 package com.udacity.sanketbhat.bakingapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sanketbhat.bakingapp.R;
+import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.model.Step;
 
 import java.util.List;
@@ -80,10 +83,12 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
         void onStepClick(View v, int position);
     }
 
-    class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnTouchListener {
 
         TextView title, subTitle;
         ImageView image;
+        View revealView;
+        int x, y;
 
         StepViewHolder(View itemView) {
             super(itemView);
@@ -91,11 +96,22 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
             title = itemView.findViewById(R.id.stepTitle);
             subTitle = itemView.findViewById(R.id.stepSubtitle);
             image = itemView.findViewById(R.id.stepImage);
+            revealView = itemView.findViewById(R.id.revealEffectView);
+            itemView.setOnTouchListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            Utils.animateReveal(revealView, x, y);
             if (mStepClickListener != null) mStepClickListener.onStepClick(v, getAdapterPosition());
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            x = (int) event.getX();
+            y = (int) event.getY();
+            return false;
         }
     }
 }

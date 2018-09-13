@@ -33,11 +33,18 @@ import com.udacity.sanketbhat.bakingapp.model.Step;
  */
 public class StepDetailFragment extends Fragment {
     public static final String STEP_ITEM = "StepItem";
+    private static final String EXTRA_PLAY_WHEN_READY = "playWhenReady";
+    private static final String EXTRA_WINDOW_INDEX = "currentWindowIndex";
+    private static final String EXTRA_CURRENT_POSITION = "currentSeekPosition";
+    Uri videoUri;
     private Step stepItem;
     private SimpleExoPlayer player;
     private PlayerView playerView;
     private PlayerEventListener playerEventListener;
     private ProgressBar bufferingProgressBar;
+    private boolean playWhenReady = true;
+    private int currentWindow = 0;
+    private long playbackPosition = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,6 +63,12 @@ public class StepDetailFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
+
+        if (savedInstanceState != null) {
+            playWhenReady = savedInstanceState.getBoolean(EXTRA_PLAY_WHEN_READY, true);
+            currentWindow = savedInstanceState.getInt(EXTRA_WINDOW_INDEX, 0);
+            playbackPosition = savedInstanceState.getLong(EXTRA_CURRENT_POSITION, 0);
+        }
     }
 
     @Override
@@ -73,6 +86,14 @@ public class StepDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(EXTRA_PLAY_WHEN_READY, playWhenReady);
+        outState.putLong(EXTRA_CURRENT_POSITION, playbackPosition);
+        outState.putInt(EXTRA_WINDOW_INDEX, currentWindow);
     }
 
     @Override
@@ -95,15 +116,17 @@ public class StepDetailFragment extends Fragment {
         player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()),
                 new DefaultTrackSelector(),
                 new DefaultLoadControl());
-        player.setPlayWhenReady(true);
+
         player.addListener(playerEventListener);
         playerView.setPlayer(player);
 
-        Uri uri = Uri.parse(stepItem.getVideoURL());
-        MediaSource mediaSource = new ExtractorMediaSource.Factory(
-                new DefaultHttpDataSourceFactory(getString(R.string.app_name))).createMediaSource(uri);
 
-        player.prepare(mediaSource, true, false);
+        videoUri = Uri.parse(stepItem.getVideoURL());
+        MediaSource mediaSource = new ExtractorMediaSource.Factory(
+                new DefaultHttpDataSourceFactory(getString(R.string.app_name))).createMediaSource(videoUri);
+        player.seekTo(currentWindow, playbackPosition);
+        player.prepare(mediaSource, false, false);
+        player.setPlayWhenReady(playWhenReady);
     }
 
     @Override
@@ -123,9 +146,11 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void releasePlayer() {
+        playWhenReady = player.getPlayWhenReady();
+        currentWindow = player.getCurrentWindowIndex();
+        playbackPosition = player.getCurrentPosition();
         player.stop();
         player.release();
-        player = null;
     }
 
     private class PlayerEventListener extends Player.DefaultEventListener {

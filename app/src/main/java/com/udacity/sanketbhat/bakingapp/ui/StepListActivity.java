@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.udacity.sanketbhat.bakingapp.R;
+import com.udacity.sanketbhat.bakingapp.adapter.RecipeLayoutManager;
 import com.udacity.sanketbhat.bakingapp.adapter.StepListAdapter;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
@@ -71,7 +71,7 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, @NonNull List<Step> stepList) {
         adapter = new StepListAdapter(this, stepList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new RecipeLayoutManager(this, mTwoPane));
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
     }

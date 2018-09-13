@@ -1,7 +1,5 @@
 package com.udacity.sanketbhat.bakingapp.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,13 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sanketbhat.bakingapp.R;
+import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
 
 import java.util.List;
@@ -27,11 +25,13 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     private List<Recipe> recipeList;
     private RecipeClickListener mRecipeClickListener;
     private Context mContext;
+    private int[] recipeImageIds;
 
     public RecipeListAdapter(List<Recipe> recipes, Context context, RecipeClickListener listener) {
         this.mRecipeClickListener = listener;
         this.recipeList = recipes;
         this.mContext = context;
+        recipeImageIds = Utils.getRecipeImageIds();
     }
 
     @NonNull
@@ -52,6 +52,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         Resources res = mContext.getResources();
 
         // TODO: 31-08-2018 Use static images if provided link is null
+        holder.recipeImage.setImageResource(recipeImageIds[position % recipeImageIds.length]);
         if (recipeList.get(position).getImage() != null && !recipeList.get(position).getImage().equals("")) {
             Picasso.with(holder.itemView.getContext())
                     .load(Uri.parse(recipeList.get(position).getImage()))
@@ -102,34 +103,11 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         @Override
         public void onClick(View v) {
-            animateReveal(v);
+            Utils.animateReveal(revealView, x, y);
             if (mRecipeClickListener != null)
                 mRecipeClickListener.onRecipeClick(v, getAdapterPosition());
         }
 
-        private void animateReveal(View v) {
-            Animator anim = ViewAnimationUtils.createCircularReveal(revealView, x, y, 32, Math.max(v.getHeight(), v.getWidth()));
-
-            revealView.setVisibility(View.VISIBLE);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation, boolean isReverse) {
-                    revealView.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    revealView.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    revealView.setVisibility(View.INVISIBLE);
-                }
-            });
-            anim.start();
-
-        }
 
         @SuppressLint("ClickableViewAccessibility")
         @Override

@@ -8,9 +8,15 @@ public class RecipeLayoutManager extends GridLayoutManager {
 
     private static final int ITEM_WIDTH_MIN = 280;
 
-    public RecipeLayoutManager(Context context) {
+    public RecipeLayoutManager(Context context, boolean twoPane) {
         super(context, 1);
-        calculateDynamicSpan(context);
+        if (!twoPane) {
+            calculateDynamicSpan(context);
+        }
+    }
+
+    public RecipeLayoutManager(Context context) {
+        this(context, false);
     }
 
     private void calculateDynamicSpan(Context context) {

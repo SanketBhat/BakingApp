@@ -10,6 +10,7 @@ import android.widget.RemoteViews;
 
 import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.Utils;
+import com.udacity.sanketbhat.bakingapp.ui.MainActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -22,8 +23,13 @@ public class RecipeIngredients extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget_grid);
 
+        //Set recipe name and it's pending intent
         views.setTextViewText(R.id.ingredients_widget_recipe_name, Utils.getRecipeName(context, appWidgetId));
+        Intent launchIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingLaunchIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.ingredients_widget_recipe_name, pendingLaunchIntent);
 
+        //Set class for widget list
         Intent intent = new Intent(context, IngredientListWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
@@ -35,6 +41,7 @@ public class RecipeIngredients extends AppWidgetProvider {
         views.setPendingIntentTemplate(R.id.ingredients_widget_grid_view, pendingIntent);
 
         views.setEmptyView(R.id.ingredients_widget_grid_view, R.id.ingredients_widget_empty_text);
+
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
