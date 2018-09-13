@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.adapter.IngredientListAdapter;
@@ -16,12 +17,18 @@ import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class StepIngredientsFragment extends Fragment {
 
     public static final String EXTRA_INGREDIENT_LIST = "ingredientsList";
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.ingredientsRecyclerView)
+    RecyclerView recyclerView;
     private ArrayList<Ingredient> ingredients;
 
     public StepIngredientsFragment() {
@@ -30,14 +37,18 @@ public class StepIngredientsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ingredients = getArguments().getParcelableArrayList(EXTRA_INGREDIENT_LIST);
+        if (getArguments() != null && getArguments().containsKey(EXTRA_INGREDIENT_LIST)) {
+            ingredients = getArguments().getParcelableArrayList(EXTRA_INGREDIENT_LIST);
+        } else {
+            Toast.makeText(getContext(), R.string.ingredients_activity_error_message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_step_ingredients, container, false);
-        RecyclerView recyclerView = v.findViewById(R.id.ingredientsRecyclerView);
+        ButterKnife.bind(this, v);
         IngredientListAdapter adapter = new IngredientListAdapter(ingredients);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -8,15 +8,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.udacity.sanketbhat.bakingapp.R;
+import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class IngredientListAdapter extends RecyclerView.Adapter<IngredientListAdapter.IngredientViewHolder> {
 
-    List<Ingredient> ingredients;
+    private final List<Ingredient> ingredients;
 
     public IngredientListAdapter(ArrayList<Ingredient> ingredients) {
         this.ingredients = ingredients;
@@ -32,11 +32,9 @@ public class IngredientListAdapter extends RecyclerView.Adapter<IngredientListAd
 
     @Override
     public void onBindViewHolder(@NonNull IngredientViewHolder holder, int position) {
-        String name = ingredients.get(position).getIngredient();
-        String iName = name.substring(0, 1).toUpperCase() + name.substring(1);
-        String quantity = String.format(Locale.getDefault(), "%.1f %s", ingredients.get(position).getQuantity(), ingredients.get(position).getMeasure());
-        holder.name.setText(iName);
-        holder.quantity.setText(quantity);
+        Ingredient ingredient = ingredients.get(position);
+        holder.name.setText(Utils.getIngredientDisplayName(ingredient.getIngredient()));
+        holder.quantity.setText(Utils.getIngredientQuantityString(ingredient.getQuantity(), ingredient.getMeasure()));
     }
 
     @Override
@@ -46,7 +44,7 @@ public class IngredientListAdapter extends RecyclerView.Adapter<IngredientListAd
     }
 
     class IngredientViewHolder extends RecyclerView.ViewHolder {
-        TextView name, quantity;
+        final TextView name, quantity;
 
         IngredientViewHolder(View itemView) {
             super(itemView);

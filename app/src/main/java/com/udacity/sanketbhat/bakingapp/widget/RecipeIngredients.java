@@ -18,6 +18,7 @@ import com.udacity.sanketbhat.bakingapp.ui.MainActivity;
  */
 public class RecipeIngredients extends AppWidgetProvider {
 
+    @SuppressWarnings("WeakerAccess")
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         // Construct the RemoteViews object

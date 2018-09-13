@@ -4,8 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.udacity.sanketbhat.bakingapp.Dependencies;
 import com.udacity.sanketbhat.bakingapp.api.RecipeService;
@@ -18,11 +16,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+@SuppressWarnings("WeakerAccess")
 public class MainViewModel extends AndroidViewModel {
-    private static final String TAG = "MainViewModel";
-    private RecipeService recipeService;
-    private MutableLiveData<List<Recipe>> recipeLiveData;
-    private MutableLiveData<Void> errorIndicator;
+
+    private final RecipeService recipeService;
+    private final MutableLiveData<List<Recipe>> recipeLiveData;
+    private final MutableLiveData<Void> errorIndicator;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -35,7 +34,7 @@ public class MainViewModel extends AndroidViewModel {
         if (recipeLiveData.getValue() == null) {
             recipeService.getRecipes().enqueue(new Callback<List<Recipe>>() {
                 @Override
-                public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
                     if (response.isSuccessful()) {
                         recipeLiveData.setValue(response.body());
                     } else {
@@ -44,13 +43,8 @@ public class MainViewModel extends AndroidViewModel {
                 }
 
                 @Override
-                public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
                     errorIndicator.setValue(null);
-                    Toast.makeText(getApplication().getApplicationContext(),
-                            "Failed to get recipe list!",
-                            Toast.LENGTH_LONG)
-                            .show();
-                    Log.e(TAG, "onFailure: ", t);
                 }
             });
         }

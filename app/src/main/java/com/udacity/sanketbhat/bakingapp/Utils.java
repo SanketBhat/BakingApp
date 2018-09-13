@@ -14,7 +14,13 @@ import com.google.gson.reflect.TypeToken;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 
 import java.util.List;
+import java.util.Locale;
 
+/**
+ * The class having various helpful methods.
+ * Manages preference saves and retrieves, static image resource ids
+ * and finally some string format methods
+ */
 public class Utils {
 
     private static final int[] static_images = {
@@ -30,6 +36,7 @@ public class Utils {
 
     @SuppressLint("ApplySharedPref")
     public static void saveIngredientsList(Context context, String ingredientsJson, int mAppWidgetId) {
+        //Can not store in background, it is retrieved by widget immediately
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(String.valueOf(mAppWidgetId), ingredientsJson)
@@ -51,6 +58,7 @@ public class Utils {
 
     @SuppressLint("ApplySharedPref")
     public static void saveRecipeName(Context context, String recipeName, int mAppWidgetId) {
+        //Can not store in background, it is retrieved by widget immediately
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString("name_" + mAppWidgetId, recipeName)
@@ -97,6 +105,13 @@ public class Utils {
             }
         });
         anim.start();
+    }
 
+    public static String getIngredientDisplayName(String ingredientName) {
+        return ingredientName.substring(0, 1).toUpperCase() + ingredientName.substring(1);
+    }
+
+    public static String getIngredientQuantityString(double quantity, String unit) {
+        return String.format(Locale.getDefault(), "%.1f %s", quantity, unit);
     }
 }

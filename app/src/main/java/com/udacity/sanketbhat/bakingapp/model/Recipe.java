@@ -1,4 +1,3 @@
-
 package com.udacity.sanketbhat.bakingapp.model;
 
 import android.os.Parcel;
@@ -26,15 +25,15 @@ public class Recipe implements Parcelable {
     @SerializedName("name")
     private String name;
     @SerializedName("ingredients")
-    private List<Ingredient> ingredients = null;
+    private List<Ingredient> ingredients;
     @SerializedName("steps")
-    private List<Step> steps = null;
+    private List<Step> steps;
     @SerializedName("servings")
     private Integer servings;
     @SerializedName("image")
     private String image;
 
-    protected Recipe(Parcel in) {
+    private Recipe(Parcel in) {
         if (in.readByte() == 0) {
             id = null;
         } else {

@@ -3,6 +3,7 @@ package com.udacity.sanketbhat.bakingapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,9 @@ import com.udacity.sanketbhat.bakingapp.model.Step;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * An activity representing a list of Steps. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -26,10 +30,18 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
+@SuppressWarnings("WeakerAccess")
 public class StepListActivity extends AppCompatActivity implements StepListAdapter.StepClickListener {
     List<Step> steps;
     StepListAdapter adapter;
     List<Ingredient> ingredients;
+    @BindView(R.id.step_list)
+    RecyclerView recyclerView;
+    @BindView(R.id.step_detail_container)
+    @Nullable
+    View container;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -40,8 +52,7 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_list);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
         Bundle bundle = getIntent().getExtras();
@@ -55,18 +66,12 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
             }
         }
 
-        if (findViewById(R.id.step_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
+        if (container != null) {
+            //It's a tablet device
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.step_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView, steps);
-
+        setupRecyclerView(recyclerView, steps);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, @NonNull List<Step> stepList) {
@@ -77,11 +82,12 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
     }
 
     @Override
-    public void onStepClick(View v, int position) {
+    public void onStepClick(int position) {
 
         if (mTwoPane) {
             Bundle arguments = new Bundle();
             if (position == 0) {
+                //Ingredient list item clicked
                 arguments.putParcelableArrayList(StepIngredientsFragment.EXTRA_INGREDIENT_LIST, new ArrayList<>(ingredients));
                 StepIngredientsFragment fragment = new StepIngredientsFragment();
                 fragment.setArguments(arguments);
@@ -100,6 +106,7 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
             }
         } else {
             if (position == 0) {
+                //Ingredient list item clicked
                 Intent intent = new Intent(this, StepIngredientsActivity.class);
                 intent.putExtra(StepIngredientsFragment.EXTRA_INGREDIENT_LIST, new ArrayList<>(ingredients));
                 startActivity(intent);

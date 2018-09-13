@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="@dimen/app_common_margin_small">
 
     <ImageView
         android:id="@+id/stepImage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:contentDescription="Step Image"
+        android:layout_height="@dimen/step_list_item_height"
+        android:contentDescription="@string/step_list_item_image_description"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/recipe_bg_default" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/step_list_item_background_view_height"
         android:layout_gravity="bottom"
         android:background="@drawable/recipe_list_name_bg" />
     <LinearLayout
@@ -36,7 +36,7 @@
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginTop="@dimen/text_margin"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="14sp"
+            android:textSize="@dimen/step_list_item_title_text_size"
             tools:text="Step 1" />
 
         <TextView
@@ -48,9 +48,9 @@
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
             android:layout_marginStart="@dimen/text_margin"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/app_common_margin_small"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="18sp"
+            android:textSize="@dimen/step_list_item_subtitle_text_size"
             android:textStyle="bold"
             tools:text="Introduction" />
     </LinearLayout>
@@ -58,7 +58,7 @@
     <View
         android:id="@+id/revealEffectView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/step_list_item_height"
         android:background="?android:attr/colorControlHighlight"
         android:visibility="invisible" />
 </android.support.v7.widget.CardView>

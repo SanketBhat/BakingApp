@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.ui.MainActivity;
 
@@ -62,7 +63,7 @@ public class RecipeIngredientsConfigureActivity extends Activity {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{mAppWidgetId});
             sendBroadcast(intent);
 
-            Toast.makeText(this, "Adding home screen widget", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.recipe_widget_message, Toast.LENGTH_SHORT).show();
         }
 
         finish();

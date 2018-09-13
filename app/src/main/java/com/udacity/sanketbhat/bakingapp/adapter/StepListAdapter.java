@@ -23,9 +23,9 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
     private static final int VIEW_TYPE_STEP = 0;
     private static final int VIEW_TYPE_INGREDIENTS = 1;
 
-    private StepClickListener mStepClickListener;
-    private List<Step> stepList;
-    private Context mContext;
+    private final StepClickListener mStepClickListener;
+    private final List<Step> stepList;
+    private final Context mContext;
 
     public StepListAdapter(Context context, List<Step> stepList, StepClickListener listener) {
         this.stepList = stepList;
@@ -59,7 +59,8 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
     @Override
     public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TYPE_STEP) {
-            String title = "Step " + (stepList.get(position - 1).getId() + 1);
+            int stepNumber = stepList.get(position - 1).getId() + 1;
+            String title = mContext.getString(R.string.recipe_step_title_template, stepNumber);
             holder.title.setText(title);
             holder.subTitle.setText(stepList.get(position - 1).getShortDescription());
 
@@ -80,14 +81,14 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
     }
 
     public interface StepClickListener {
-        void onStepClick(View v, int position);
+        void onStepClick(int position);
     }
 
     class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnTouchListener {
 
-        TextView title, subTitle;
-        ImageView image;
-        View revealView;
+        final TextView title, subTitle;
+        final ImageView image;
+        final View revealView;
         int x, y;
 
         StepViewHolder(View itemView) {
@@ -103,7 +104,7 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepVi
         @Override
         public void onClick(View v) {
             Utils.animateReveal(revealView, x, y);
-            if (mStepClickListener != null) mStepClickListener.onStepClick(v, getAdapterPosition());
+            if (mStepClickListener != null) mStepClickListener.onStepClick(getAdapterPosition());
         }
 
         @SuppressLint("ClickableViewAccessibility")

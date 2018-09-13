@@ -1,12 +1,41 @@
-<resources>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="app_bar_height">200dp</dimen>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="item_width">200dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
-    <!--
-Refer to App Widget Documentation for margin information
-http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
-    -->
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="exo_player_custom_controller_layout_margin_top" tools:keep="@dimen/exo_player_custom_controller_layout_margin_top">
+        4dp
+    </dimen>
+    <dimen name="exo_player_custom_controller_common_padding" tools:keep="@dimen/exo_player_custom_controller_common_padding">
+        4dp
+    </dimen>
+    <dimen name="exo_player_custom_controller_time_text_size" tools:keep="@dimen/exo_player_custom_controller_time_text_size">
+        14sp
+    </dimen>
+    <dimen name="exo_player_custom_controller_time_height" tools:keep="@dimen/exo_player_custom_controller_time_height">
+        26dp
+    </dimen>
+    <dimen name="app_common_margin">8dp</dimen>
+    <dimen name="constraint_layout_no_dimension">0dp</dimen>
+    <dimen name="ingredients_widget_title_text_size">18sp</dimen>
+    <dimen name="recipe_list_item_height">216dp</dimen>
+    <dimen name="app_common_margin_small">4dp</dimen>
+    <dimen name="recipe_list_item_card_radius">8dp</dimen>
+    <dimen name="recipe_list_item_card_elevation">4dp</dimen>
+    <dimen name="recipe_list_item_view_background_height">96dp</dimen>
+    <dimen name="recipe_list_item_name_margin_top">48dp</dimen>
+    <dimen name="recipe_list_item_name_text_size">18sp</dimen>
+    <dimen name="recipe_list_item_content_text_size">12sp</dimen>
+    <dimen name="step_detail_player_height">280dp</dimen>
+    <dimen name="step_detail_title_padding">8dp</dimen>
+    <dimen name="step_detail_title">18sp</dimen>
+    <dimen name="step_detail_ingredient_card_margin">2dp</dimen>
+    <dimen name="step_list_margin_mobile">16dp</dimen>
+    <dimen name="step_list_margin_tablet">16dp</dimen>
+    <dimen name="step_list_item_height">200dp</dimen>
+    <dimen name="step_list_item_background_view_height">100dp</dimen>
+    <dimen name="step_list_item_title_text_size">14sp</dimen>
+    <dimen name="step_list_item_subtitle_text_size">18sp</dimen>
+    <dimen name="step_list_item_ingredients_height">80dp</dimen>
+    <dimen name="step_list_item_ingredient_text_size">18sp</dimen>
 </resources>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/app_common_margin"
         android:gravity="center_horizontal"
         android:textColor="@android:color/white"
         tools:text="2 Cups" />
@@ -22,7 +22,7 @@
         android:id="@+id/ingredient_widget_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/app_common_margin"
         android:layout_toStartOf="@+id/ingredient_widget_item_quantity"
         android:ellipsize="end"
         android:gravity="center_vertical|start"

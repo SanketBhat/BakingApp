@@ -9,19 +9,31 @@ import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class StepIngredientsActivity extends AppCompatActivity {
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_ingredients);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.ingredients_activity_title);
+        }
 
+        //savedInstanceState not null implies state saved by fragment
         if (savedInstanceState == null) {
+            //Put the ingredient list and add the fragment
             ArrayList<Ingredient> ingredients = getIntent().getParcelableArrayListExtra(StepIngredientsFragment.EXTRA_INGREDIENT_LIST);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(StepIngredientsFragment.EXTRA_INGREDIENT_LIST, ingredients);
+
             StepIngredientsFragment fragment = new StepIngredientsFragment();
             fragment.setArguments(bundle);
 

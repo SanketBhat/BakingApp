@@ -23,9 +23,9 @@ import java.util.List;
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.RecipeListViewHolder> {
 
     private List<Recipe> recipeList;
-    private RecipeClickListener mRecipeClickListener;
-    private Context mContext;
-    private int[] recipeImageIds;
+    private final RecipeClickListener mRecipeClickListener;
+    private final Context mContext;
+    private final int[] recipeImageIds;
 
     public RecipeListAdapter(List<Recipe> recipes, Context context, RecipeClickListener listener) {
         this.mRecipeClickListener = listener;
@@ -51,7 +51,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         int servings = recipe.getServings();
         Resources res = mContext.getResources();
 
-        // TODO: 31-08-2018 Use static images if provided link is null
+        // Using static images, If thumbnail url is provided that will be displayed...
         holder.recipeImage.setImageResource(recipeImageIds[position % recipeImageIds.length]);
         if (recipeList.get(position).getImage() != null && !recipeList.get(position).getImage().equals("")) {
             Picasso.with(holder.itemView.getContext())
@@ -80,13 +80,13 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     }
 
     public interface RecipeClickListener {
-        void onRecipeClick(View v, int position);
+        void onRecipeClick(int position);
     }
 
     class RecipeListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnTouchListener {
-        ImageView recipeImage;
-        TextView recipeName, recipeIngredients, recipeServings, recipeSteps;
-        View revealView;
+        final ImageView recipeImage;
+        final TextView recipeName, recipeIngredients, recipeServings, recipeSteps;
+        final View revealView;
         int x, y;
 
         RecipeListViewHolder(View itemView) {
@@ -105,7 +105,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         public void onClick(View v) {
             Utils.animateReveal(revealView, x, y);
             if (mRecipeClickListener != null)
-                mRecipeClickListener.onRecipeClick(v, getAdapterPosition());
+                mRecipeClickListener.onRecipeClick(getAdapterPosition());
         }
 
 
@@ -114,6 +114,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         public boolean onTouch(View v, MotionEvent event) {
             x = (int) event.getX();
             y = (int) event.getY();
+            // Let the system handle all other tasks
             return false;
         }
     }

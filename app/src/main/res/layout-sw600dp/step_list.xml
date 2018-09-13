@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="16dp"
+    android:layout_marginEnd="@dimen/step_list_margin_tablet"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
@@ -13,7 +13,6 @@
     <!--
     This layout is a two-pane layout for the Steps
     master/detail flow.
-    
     -->
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,8 +21,8 @@
         android:name="com.udacity.sanketbhat.bakingapp.ui.StepListFragment"
         android:layout_width="@dimen/item_width"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/step_list_margin_tablet"
+        android:layout_marginRight="@dimen/step_list_margin_tablet"
         tools:context="com.udacity.sanketbhat.bakingapp.ui.StepListActivity"
         tools:listitem="@layout/step_list_item" />
 
@@ -31,6 +30,7 @@
         android:id="@+id/step_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="3"
+        tools:ignore="InconsistentLayout" />
 
 </LinearLayout>

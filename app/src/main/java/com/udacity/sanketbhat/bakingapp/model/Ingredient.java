@@ -25,6 +25,7 @@ public class Ingredient implements Parcelable {
     @SerializedName("ingredient")
     private String ingredient;
 
+    @SuppressWarnings("WeakerAccess")
     protected Ingredient(Parcel in) {
         quantity = in.readDouble();
         measure = in.readString();

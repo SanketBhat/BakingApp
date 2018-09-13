@@ -13,7 +13,6 @@ import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class IngredientListWidgetService extends RemoteViewsService {
 
@@ -27,8 +26,9 @@ public class IngredientListWidgetService extends RemoteViewsService {
 
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private int mAppWidgetId;
-    private Context context;
+    private static final String WEB_SEARCH_ADDRESS = "https://www.google.com/images?q=";
+    private final int mAppWidgetId;
+    private final Context context;
     private List<Ingredient> ingredients = new ArrayList<>();
 
     ListRemoteViewsFactory(Context context, int mAppWidgetId) {
@@ -51,20 +51,22 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        return ingredients.size();
+        if (ingredients != null) return ingredients.size();
+        return 0;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget_item);
-        String name = ingredients.get(position).getIngredient();
-        String iName = name.substring(0, 1).toUpperCase() + name.substring(1);
-        String quantity = String.format(Locale.getDefault(), "%.1f %s", ingredients.get(position).getQuantity(), ingredients.get(position).getMeasure());
-        views.setTextViewText(R.id.ingredient_widget_item_name, iName);
-        views.setTextViewText(R.id.ingredient_widget_item_quantity, quantity);
+        Ingredient ingredient = ingredients.get(position);
+
+        views.setTextViewText(R.id.ingredient_widget_item_name, Utils.getIngredientDisplayName(ingredient.getIngredient()));
+
+        views.setTextViewText(R.id.ingredient_widget_item_quantity,
+                Utils.getIngredientQuantityString(ingredient.getQuantity(), ingredient.getMeasure()));
 
         Intent fillInIntent = new Intent();
-        fillInIntent.setData(Uri.parse("https://www.google.com/images?q=" + iName));
+        fillInIntent.setData(Uri.parse(WEB_SEARCH_ADDRESS + ingredient.getIngredient()));
         views.setOnClickFillInIntent(R.id.ingredients_widget_item, fillInIntent);
 
         return views;

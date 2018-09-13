@@ -25,23 +25,34 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.model.Step;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A fragment representing a single Step detail screen.
  * This fragment is either contained in a {@link StepListActivity}
  * in two-pane mode (on tablets) or a {@link StepDetailActivity}
  * on handsets.
  */
+@SuppressWarnings("WeakerAccess")
 public class StepDetailFragment extends Fragment {
+
     public static final String STEP_ITEM = "StepItem";
     private static final String EXTRA_PLAY_WHEN_READY = "playWhenReady";
     private static final String EXTRA_WINDOW_INDEX = "currentWindowIndex";
     private static final String EXTRA_CURRENT_POSITION = "currentSeekPosition";
     Uri videoUri;
+    @BindView(R.id.exoPlayerView)
+    PlayerView playerView;
+    @BindView(R.id.bufferProgressBar)
+    ProgressBar bufferingProgressBar;
+    @BindView(R.id.stepShortDescription)
+    TextView shortDescription;
+    @BindView(R.id.stepFullDescription)
+    TextView fullDescription;
     private Step stepItem;
     private SimpleExoPlayer player;
-    private PlayerView playerView;
     private PlayerEventListener playerEventListener;
-    private ProgressBar bufferingProgressBar;
     private boolean playWhenReady = true;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -59,15 +70,18 @@ public class StepDetailFragment extends Fragment {
 
         if (getArguments() != null && getArguments().containsKey(STEP_ITEM)) {
             stepItem = getArguments().getParcelable(STEP_ITEM);
-            playerEventListener = new PlayerEventListener();
-        } else {
-            Toast.makeText(getContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
 
-        if (savedInstanceState != null) {
-            playWhenReady = savedInstanceState.getBoolean(EXTRA_PLAY_WHEN_READY, true);
-            currentWindow = savedInstanceState.getInt(EXTRA_WINDOW_INDEX, 0);
-            playbackPosition = savedInstanceState.getLong(EXTRA_CURRENT_POSITION, 0);
+        if (stepItem != null) {
+            playerEventListener = new PlayerEventListener();
+
+            if (savedInstanceState != null) {
+                playWhenReady = savedInstanceState.getBoolean(EXTRA_PLAY_WHEN_READY, true);
+                currentWindow = savedInstanceState.getInt(EXTRA_WINDOW_INDEX, 0);
+                playbackPosition = savedInstanceState.getLong(EXTRA_CURRENT_POSITION, 0);
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.step_detail_error_message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -76,13 +90,11 @@ public class StepDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
-        playerView = rootView.findViewById(R.id.exoPlayerView);
-        bufferingProgressBar = rootView.findViewById(R.id.bufferProgressBar);
-
+        ButterKnife.bind(this, rootView);
 
         if (stepItem != null) {
-            ((TextView) rootView.findViewById(R.id.stepShortDescription)).setText(stepItem.getShortDescription());
-            ((TextView) rootView.findViewById(R.id.stepFullDescription)).setText(stepItem.getDescription());
+            shortDescription.setText(stepItem.getShortDescription());
+            fullDescription.setText(stepItem.getDescription());
         }
 
         return rootView;
@@ -99,7 +111,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (Build.VERSION.SDK_INT >= 24) {
+        if (Build.VERSION.SDK_INT >= 24 && stepItem != null) {
             initializePlayer();
         }
     }
@@ -107,7 +119,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT <= 23) {
+        if (Build.VERSION.SDK_INT <= 23 && stepItem != null) {
             initializePlayer();
         }
     }
@@ -132,7 +144,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (Build.VERSION.SDK_INT <= 23) {
+        if (Build.VERSION.SDK_INT <= 23 && player != null) {
             releasePlayer();
         }
     }
@@ -140,7 +152,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (Build.VERSION.SDK_INT >= 24) {
+        if (Build.VERSION.SDK_INT >= 24 && player != null) {
             releasePlayer();
         }
     }

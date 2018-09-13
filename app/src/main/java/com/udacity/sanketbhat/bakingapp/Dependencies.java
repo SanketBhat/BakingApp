@@ -12,6 +12,7 @@ public class Dependencies {
     private static final long CONNECTION_TIMEOUT = 10000;
     private static final long READ_TIMEOUT = 15000;
     private static RecipeService recipeService = null;
+    private static final String NETWORK_CONTENT_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
 
     public static synchronized RecipeService getRecipeService() {
         if (recipeService == null) {
@@ -22,7 +23,7 @@ public class Dependencies {
                     .build();
             Retrofit retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/")
+                    .baseUrl(NETWORK_CONTENT_BASE_URL)
                     .client(okHttpClient)
                     .build();
             recipeService = retrofit.create(RecipeService.class);
