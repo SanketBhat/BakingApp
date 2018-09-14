@@ -3,7 +3,11 @@ package com.udacity.sanketbhat.bakingapp.ui;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +23,7 @@ import com.udacity.sanketbhat.bakingapp.adapter.RecipeLayoutManager;
 import com.udacity.sanketbhat.bakingapp.adapter.RecipeListAdapter;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
+import com.udacity.sanketbhat.bakingapp.test.SimpleIdlingResource;
 
 import java.util.List;
 
@@ -42,6 +47,18 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     private RecipeListAdapter listAdapter;
     private MainViewModel viewModel;
 
+    @Nullable
+    private SimpleIdlingResource idlingResource;
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new SimpleIdlingResource();
+        }
+        return idlingResource;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +72,12 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         //Prepare Views
         initializeRecyclerView();
 
+
         //Observer for the recipe list
-        viewModel.getRecipes().observe(this, recipes -> {
+        viewModel.getRecipes(idlingResource).observe(this, recipes -> {
             listAdapter.setRecipeList(recipes);
             progressBar.setVisibility(View.GONE);
+            if (idlingResource != null) idlingResource.setIdle(true);
         });
 
         //Called when some error occurs
@@ -67,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
             Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_main_view), R.string.activity_main_error_message, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction(R.string.activity_main_snackbar_retry_button, v -> {
                 progressBar.setVisibility(View.VISIBLE);
-                viewModel.getRecipes();
+                viewModel.getRecipes(idlingResource);
             });
             snackbar.show();
         });

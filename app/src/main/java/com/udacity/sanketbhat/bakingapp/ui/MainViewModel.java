@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.udacity.sanketbhat.bakingapp.Dependencies;
 import com.udacity.sanketbhat.bakingapp.api.RecipeService;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
+import com.udacity.sanketbhat.bakingapp.test.SimpleIdlingResource;
 
 import java.util.List;
 
@@ -30,13 +31,15 @@ public class MainViewModel extends AndroidViewModel {
         errorIndicator = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<Recipe>> getRecipes() {
+    public MutableLiveData<List<Recipe>> getRecipes(SimpleIdlingResource idlingResource) {
         if (recipeLiveData.getValue() == null) {
+            if (idlingResource != null) idlingResource.setIdle(false);
             recipeService.getRecipes().enqueue(new Callback<List<Recipe>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
                     if (response.isSuccessful()) {
                         recipeLiveData.setValue(response.body());
+                        if (idlingResource != null) idlingResource.setIdle(true);
                     } else {
                         errorIndicator.setValue(null);
                     }
