@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.udacity.sanketbhat.bakingapp.R;
-import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.ui.MainActivity;
+import com.udacity.sanketbhat.bakingapp.utils.Utils;
 
 /**
  * The configuration screen for the {@link RecipeIngredients RecipeIngredients} AppWidget.

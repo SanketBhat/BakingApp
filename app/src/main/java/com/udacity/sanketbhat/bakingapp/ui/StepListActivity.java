@@ -3,11 +3,11 @@ package com.udacity.sanketbhat.bakingapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.MenuItem;
 
 import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.adapter.RecipeLayoutManager;
@@ -35,11 +35,10 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
     List<Step> steps;
     StepListAdapter adapter;
     List<Ingredient> ingredients;
+
     @BindView(R.id.step_list)
     RecyclerView recyclerView;
-    @BindView(R.id.step_detail_container)
-    @Nullable
-    View container;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     /**
@@ -52,24 +51,25 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_list);
+
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(MainActivity.RECIPE_ITEM)) {
             Recipe recipe = bundle.getParcelable(MainActivity.RECIPE_ITEM);
             if (recipe != null) {
-                toolbar.setTitle(recipe.getName());
-
+                setTitle(recipe.getName());
                 steps = recipe.getSteps();
                 ingredients = recipe.getIngredients();
             }
         }
 
-        if (container != null) {
-            //It's a tablet device
-            mTwoPane = true;
-        }
+        mTwoPane = getResources().getBoolean(R.bool.tablet);
 
         setupRecyclerView(recyclerView, steps);
     }
@@ -118,5 +118,14 @@ public class StepListActivity extends AppCompatActivity implements StepListAdapt
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.homeAsUp) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

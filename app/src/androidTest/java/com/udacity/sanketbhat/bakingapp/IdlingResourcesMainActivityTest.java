@@ -1,5 +1,6 @@
 package com.udacity.sanketbhat.bakingapp;
 
+import android.os.PowerManager;
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
@@ -13,6 +14,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Objects;
+
+import static android.content.Context.POWER_SERVICE;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -29,11 +33,23 @@ public class IdlingResourcesMainActivityTest {
     public ActivityTestRule<MainActivity> testRule = new ActivityTestRule<>(MainActivity.class);
 
     private IdlingResource idlingResource;
+    private PowerManager.WakeLock screenLock;
 
     @Before
     public void beforeTesting() {
-        idlingResource = testRule.getActivity().getIdlingResource();
+        //Wake device for testing
+        MainActivity activity = testRule.getActivity();
+        wakeUp(activity);
+
+        idlingResource = activity.getIdlingResource();
         IdlingRegistry.getInstance().register(idlingResource);
+    }
+
+    private void wakeUp(MainActivity activity) {
+        //Wake screen for UI Testing. Anyhow user has to unlock the device in order to resume testing
+        screenLock = ((PowerManager) Objects.requireNonNull(activity.getSystemService(POWER_SERVICE)))
+                .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+        screenLock.acquire();
     }
 
     @Test
@@ -80,5 +96,6 @@ public class IdlingResourcesMainActivityTest {
     @After
     public void afterTesting() {
         IdlingRegistry.getInstance().unregister(idlingResource);
+        screenLock.release();
     }
 }

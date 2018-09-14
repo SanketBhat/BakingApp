@@ -41,7 +41,6 @@ public class StepDetailFragment extends Fragment {
     private static final String EXTRA_PLAY_WHEN_READY = "playWhenReady";
     private static final String EXTRA_WINDOW_INDEX = "currentWindowIndex";
     private static final String EXTRA_CURRENT_POSITION = "currentSeekPosition";
-    Uri videoUri;
     @BindView(R.id.exoPlayerView)
     PlayerView playerView;
     @BindView(R.id.bufferProgressBar)
@@ -103,6 +102,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        saveState();
         outState.putBoolean(EXTRA_PLAY_WHEN_READY, playWhenReady);
         outState.putLong(EXTRA_CURRENT_POSITION, playbackPosition);
         outState.putInt(EXTRA_WINDOW_INDEX, currentWindow);
@@ -132,10 +132,10 @@ public class StepDetailFragment extends Fragment {
         player.addListener(playerEventListener);
         playerView.setPlayer(player);
 
-
-        videoUri = Uri.parse(stepItem.getVideoURL());
+        Uri videoUri = Uri.parse(stepItem.getVideoURL());
         MediaSource mediaSource = new ExtractorMediaSource.Factory(
                 new DefaultHttpDataSourceFactory(getString(R.string.app_name))).createMediaSource(videoUri);
+
         player.seekTo(currentWindow, playbackPosition);
         player.prepare(mediaSource, false, false);
         player.setPlayWhenReady(playWhenReady);
@@ -158,11 +158,17 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void releasePlayer() {
-        playWhenReady = player.getPlayWhenReady();
-        currentWindow = player.getCurrentWindowIndex();
-        playbackPosition = player.getCurrentPosition();
+        saveState();
         player.stop();
         player.release();
+    }
+
+    private void saveState() {
+        if (player != null) {
+            playWhenReady = player.getPlayWhenReady();
+            currentWindow = player.getCurrentWindowIndex();
+            playbackPosition = player.getCurrentPosition();
+        }
     }
 
     private class PlayerEventListener extends Player.DefaultEventListener {

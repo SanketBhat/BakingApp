@@ -18,12 +18,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.udacity.sanketbhat.bakingapp.R;
-import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.adapter.RecipeLayoutManager;
 import com.udacity.sanketbhat.bakingapp.adapter.RecipeListAdapter;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
 import com.udacity.sanketbhat.bakingapp.test.SimpleIdlingResource;
+import com.udacity.sanketbhat.bakingapp.utils.JsonUtils;
 
 import java.util.List;
 
@@ -37,12 +37,16 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     public static final String SELECTED_RECIPE_INGREDIENTS = "recipeIngredients";
     public static final String RECIPE_ITEM = "RecipeItem";
     public static final String SELECTED_RECIPE_NAME = "recipeName";
+
     @BindView(R.id.activity_main_progressbar)
     ProgressBar progressBar;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.recipeRecyclerView)
     RecyclerView recipeRecyclerView;
+
     private ActionMode actionMode = null;
     private RecipeListAdapter listAdapter;
     private MainViewModel viewModel;
@@ -72,25 +76,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         //Prepare Views
         initializeRecyclerView();
 
-
-        //Observer for the recipe list
-        viewModel.getRecipes(idlingResource).observe(this, recipes -> {
-            listAdapter.setRecipeList(recipes);
-            progressBar.setVisibility(View.GONE);
-            if (idlingResource != null) idlingResource.setIdle(true);
-        });
-
-        //Called when some error occurs
-        viewModel.getErrorIndicator().observe(this, aVoid -> {
-            progressBar.setVisibility(View.GONE);
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_main_view), R.string.activity_main_error_message, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.activity_main_snackbar_retry_button, v -> {
-                progressBar.setVisibility(View.VISIBLE);
-                viewModel.getRecipes(idlingResource);
-            });
-            snackbar.show();
-        });
-
         if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(ACTION_PICK_RECIPE)) {
             //Activity launched for selecting recipe for home screen widget
             setResult(RESULT_CANCELED);
@@ -111,6 +96,29 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        //Observer for the recipe list
+        if (idlingResource != null) idlingResource.setIdle(false);
+        viewModel.getRecipes(idlingResource).observe(this, recipes -> {
+            listAdapter.setRecipeList(recipes);
+            progressBar.setVisibility(View.GONE);
+            if (idlingResource != null) idlingResource.setIdle(true);
+        });
+
+        //Called when some error occurs
+        viewModel.getErrorIndicator().observe(this, aVoid -> {
+            progressBar.setVisibility(View.GONE);
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_main_view), R.string.activity_main_error_message, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.activity_main_snackbar_retry_button, v -> {
+                progressBar.setVisibility(View.VISIBLE);
+                viewModel.getRecipes(idlingResource);
+            });
+            snackbar.show();
+        });
+    }
+
+    @Override
     public void onRecipeClick(int position) {
         Recipe recipe = listAdapter.getRecipeList().get(position);
 
@@ -128,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
             Intent resultIntent = new Intent();
             resultIntent.putExtra(SELECTED_RECIPE_NAME, recipe.getName());
-            resultIntent.putExtra(SELECTED_RECIPE_INGREDIENTS, Utils.getJsonStringFromList(ingredients));
+            resultIntent.putExtra(SELECTED_RECIPE_INGREDIENTS, JsonUtils.serialize(ingredients));
             setResult(RESULT_OK, resultIntent);
 
             finish();

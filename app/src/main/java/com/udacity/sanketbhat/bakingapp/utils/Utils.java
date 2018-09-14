@@ -1,16 +1,15 @@
-package com.udacity.sanketbhat.bakingapp;
+package com.udacity.sanketbhat.bakingapp.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
 
 import java.util.List;
@@ -34,35 +33,27 @@ public class Utils {
         return static_images;
     }
 
-    @SuppressLint("ApplySharedPref")
     public static void saveIngredientsList(Context context, String ingredientsJson, int mAppWidgetId) {
         //Can not store in background, it is retrieved by widget immediately
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(String.valueOf(mAppWidgetId), ingredientsJson)
-                .commit();
-    }
-
-    public static String getJsonStringFromList(List<Ingredient> ingredients) {
-        Gson gson = new Gson();
-        return gson.toJson(ingredients);
+                .apply();
     }
 
     public static List<Ingredient> getSavedIngredients(Context context, int mAppWidgetId) {
         String jsonString = PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(String.valueOf(mAppWidgetId), "");
-        Gson gson = new Gson();
-        return gson.fromJson(jsonString, new TypeToken<List<Ingredient>>() {
+        return JsonUtils.deserializeList(jsonString, new TypeToken<List<Ingredient>>() {
         }.getType());
     }
 
-    @SuppressLint("ApplySharedPref")
     public static void saveRecipeName(Context context, String recipeName, int mAppWidgetId) {
         //Can not store in background, it is retrieved by widget immediately
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString("name_" + mAppWidgetId, recipeName)
-                .commit();
+                .apply();
     }
 
     public static String getRecipeName(Context context, int mAppWidgetId) {
@@ -72,11 +63,14 @@ public class Utils {
 
     public static void deleteNameAndList(Context context, int mAppWidgetId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //Delete json string
         if (prefs.contains(String.valueOf(mAppWidgetId))) {
             prefs.edit()
                     .remove(String.valueOf(mAppWidgetId))
                     .apply();
         }
+
+        //Delete recipe name
         if (prefs.contains("name_" + mAppWidgetId)) {
             prefs.edit()
                     .remove("name_" + mAppWidgetId)

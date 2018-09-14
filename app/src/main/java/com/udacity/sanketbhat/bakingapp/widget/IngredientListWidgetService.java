@@ -8,8 +8,8 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.udacity.sanketbhat.bakingapp.R;
-import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
+import com.udacity.sanketbhat.bakingapp.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

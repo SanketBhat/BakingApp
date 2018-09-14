@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sanketbhat.bakingapp.R;
-import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.model.Recipe;
+import com.udacity.sanketbhat.bakingapp.utils.Utils;
 
 import java.util.List;
 

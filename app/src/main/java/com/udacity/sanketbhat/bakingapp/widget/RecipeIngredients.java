@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.udacity.sanketbhat.bakingapp.R;
-import com.udacity.sanketbhat.bakingapp.Utils;
 import com.udacity.sanketbhat.bakingapp.ui.MainActivity;
+import com.udacity.sanketbhat.bakingapp.utils.Utils;
 
 /**
  * Implementation of App Widget functionality.

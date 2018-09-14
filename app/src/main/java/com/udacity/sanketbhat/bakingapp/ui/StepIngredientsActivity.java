@@ -1,8 +1,10 @@
 package com.udacity.sanketbhat.bakingapp.ui;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.udacity.sanketbhat.bakingapp.R;
 import com.udacity.sanketbhat.bakingapp.model.Ingredient;
@@ -23,9 +25,11 @@ public class StepIngredientsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_ingredients);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.ingredients_activity_title);
-        }
+        setTitle(R.string.ingredients_activity_title);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
 
         //savedInstanceState not null implies state saved by fragment
         if (savedInstanceState == null) {
@@ -43,4 +47,12 @@ public class StepIngredientsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.homeAsUp) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
